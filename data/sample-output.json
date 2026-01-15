@@ -1,0 +1,24 @@
+[
+  {
+    "job_title": "IoT Engineer Intern",
+    "company_name": "ExampleTech Ltd",
+    "location": "Dhaka, Bangladesh",
+    "time_posted_days": 2,
+    "employment_type": "Internship",
+    "industries": "IoT, Embedded Systems",
+    "apply_url": "https://www.linkedin.com/jobs/view/123456789",
+    "job_description": "Work with sensors, microcontrollers, and cloud dashboards.",
+    "easy_apply": true
+  },
+  {
+    "job_title": "AI Research Assistant",
+    "company_name": "AI Lab BD",
+    "location": "Remote, Bangladesh",
+    "time_posted_days": 1,
+    "employment_type": "Contract",
+    "industries": "Artificial Intelligence, Machine Learning",
+    "apply_url": "https://www.linkedin.com/jobs/view/987654321",
+    "job_description": "Assist in ML model training and data analysis.",
+    "easy_apply": false
+  }
+]

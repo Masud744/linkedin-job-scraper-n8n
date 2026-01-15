@@ -1,0 +1,522 @@
+{
+  "name": "LinkedIn Job Scraper",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "LINKEDIN JOB SCRAPPER",
+        "formFields": {
+          "values": [
+            {
+              "fieldName": "Job Title",
+              "fieldLabel": "JOB :",
+              "requiredField": true
+            },
+            {
+              "fieldName": "Location",
+              "fieldLabel": "Country :",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.4,
+      "position": [
+        -848,
+        -192
+      ],
+      "id": "919d2635-c444-4816-b8a5-12895a7a3738",
+      "name": "On form submission",
+      "webhookId": "f65a081d-58ff-433d-8d78-5a72618e8d17",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "APIFY_API_TOKEN=your_new_token_here
+",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"jobs_entries\": 20,\n  \"location\": \"{{ $json.location }}\",\n  \"keyword\": \"{{ $json.job }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -16,
+        -80
+      ],
+      "id": "c8e96249-ae5c-448b-b4c9-315a959aa40d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d881346c-004d-48ce-afb6-1f62cd53837c",
+              "name": "job",
+              "value": "=IoT OR AI OR Internship",
+              "type": "string"
+            },
+            {
+              "id": "ce2dc3f0-4b10-4e4e-a10f-f981faf8b0ba",
+              "name": "location",
+              "value": "=Bangladesh",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -304,
+        -80
+      ],
+      "id": "161c630b-88d3-4537-9c92-7cfdbb99b9ec",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const job = $json;\n\nfunction cleanText(text) {\n  if (!text) return null;\n  return text.replace(/\\n+/g, \" \").replace(/\\s+/g, \" \").trim();\n}\n\nfunction extractDays(timePosted) {\n  if (!timePosted) return null;\n  const match = timePosted.match(/\\d+/);\n  return match ? parseInt(match[0], 10) : null;\n}\n\nreturn {\n  job_title: job.job_title || null,\n  company_name: job.company_name || null,\n  location: job.location || null,\n\n  time_posted_text: job.time_posted || null,\n  time_posted_days: extractDays(job.time_posted),\n\n  applicants_text: job.num_applicants || null,\n  salary_range: job.salary_range || \"Not disclosed\",\n\n  seniority_level: job.seniority_level || null,\n  employment_type: job.employment_type || null,\n  job_function: job.job_function || null,\n  industries: job.industries || null,\n\n  job_description: cleanText(job.job_description),\n  apply_url: job.apply_url || job.job_url || null,\n\n  company_logo: job.company_logo_url || null,\n  easy_apply: job.easy_apply === true\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -80
+      ],
+      "id": "01e74cf9-08fb-4472-9b5d-30671ffa3100",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appUj4eXUE0UJYiXv",
+          "mode": "list",
+          "cachedResultName": "Linkedin Job",
+          "cachedResultUrl": "https://airtable.com/appUj4eXUE0UJYiXv"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl4dTLoWafgtgo7S",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appUj4eXUE0UJYiXv/tbl4dTLoWafgtgo7S"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Time Posted (Days)": "={{ $json.time_posted_days }}",
+            "Job Title": "={{ $json.job_title }}",
+            "Company Name": "={{ $json.company_name }}",
+            "Location": "={{ $json.location }}",
+            "Seniority Level": "={{ $json.seniority_level }}",
+            "Employment Type": "={{ $json.employment_type }}",
+            "Apply URL": "={{ $json.apply_url }}",
+            "Job Description": "={{ $json.job_description }}",
+            "Industries": "={{ $json.industries }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Time Posted (Days)",
+              "displayName": "Time Posted (Days)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Seniority Level",
+              "displayName": "Seniority Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Employment Type",
+              "displayName": "Employment Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Industries",
+              "displayName": "Industries",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Apply URL",
+              "displayName": "Apply URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Job Description",
+              "displayName": "Job Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        992,
+        -48
+      ],
+      "id": "e7e8c7a0-97d4-4f20-9afa-0bc6069bf113",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Q1A83ZB3RK6QWHce",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0e658e45-5b27-494a-a1ca-c32baadb2018",
+              "leftValue": "={{ $json.location }}",
+              "rightValue": "Bangladesh",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "7f77cf56-033e-4b6f-8c7f-6a5b631234e8",
+              "leftValue": "={{ $json.employment_type }}",
+              "rightValue": "Remote",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        512,
+        -80
+      ],
+      "id": "c5eca784-922b-4364-a2e1-47f3d9a8ef45",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appUj4eXUE0UJYiXv",
+          "mode": "list",
+          "cachedResultName": "Linkedin Job",
+          "cachedResultUrl": "https://airtable.com/appUj4eXUE0UJYiXv"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl4dTLoWafgtgo7S",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appUj4eXUE0UJYiXv/tbl4dTLoWafgtgo7S"
+        },
+        "filterByFormula": "={Apply URL} = \"{{ $json.apply_url }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        -320
+      ],
+      "id": "438f5550-f4ee-4b50-b393-d07cebaf4fba",
+      "name": "Search records",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Q1A83ZB3RK6QWHce",
+          "name": "Airtable Personal Access Token account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6e44b819-08f8-461c-9511-6e7cd4679939",
+              "leftValue": "={{ $json.id }}\n",
+              "rightValue": "0",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "043b5c3a-1245-41b6-bb29-7b5319c3611a",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        -320
+      ],
+      "id": "8e7e0568-47f9-4da3-be0b-43338572816c",
+      "name": "If1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -848,
+        -32
+      ],
+      "id": "4b863526-2b32-49fc-ad0a-451ab34e2402",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -544,
+        -80
+      ],
+      "id": "0109668a-b2b7-4848-a42a-93bcfcb058d9",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "73e6f9cf-35d8-40cd-a708-259eec441f94",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bf1ac5cbdd331527e3d1c14d616ef1cedcb1fb4988b92403f4f2f7b522152b98"
+  },
+  "id": "O5s3Z0gyH4qg4IyUPFWqq",
+  "tags": []
+}

@@ -1,0 +1,5 @@
+{
+  "actorId": "apify/linkedin-jobs-scraper",
+  "description": "LinkedIn Jobs Scraper actor configuration",
+  "docs": "https://apify.com/apify/linkedin-jobs-scraper"
+}
